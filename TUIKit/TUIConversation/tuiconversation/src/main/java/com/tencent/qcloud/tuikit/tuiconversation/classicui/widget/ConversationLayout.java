@@ -92,6 +92,13 @@ public class ConversationLayout extends RelativeLayout implements IConversationL
     }
 
     @Override
+    public void markConversationFold(ConversationInfo conversation, boolean markFold) {
+        if (presenter != null) {
+            presenter.markConversationFold(conversation, markFold);
+        }
+    }
+
+    @Override
     public void markConversationHidden(ConversationInfo conversation) {
         if (presenter != null) {
             presenter.markConversationHidden(conversation, true);

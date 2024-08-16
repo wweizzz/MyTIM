@@ -120,9 +120,33 @@ public class TUIFoldedConversationFragment extends BaseFragment {
         restoreConversationItemBackground();
     }
 
-    private void initPopMenuAction() {
-
+    private void addMarkFoldPopMenuAction() {
         PopMenuAction action = new PopMenuAction();
+        action.setActionName(getResources().getString(R.string.mark_fold));
+        action.setWeight(900);
+        action.setActionClickListener(new PopActionClickListener() {
+            @Override
+            public void onActionClick(int index, Object data) {
+                mFoldedLayout.markConversationFold((ConversationInfo) data, false);
+            }
+        });
+        mConversationPopActions.add(0, action);
+    }
+
+    private void initPopMenuAction() {
+        PopMenuAction action = new PopMenuAction();
+        action.setActionName(getResources().getString(R.string.mark_unfold));
+        action.setWeight(900);
+        action.setActionClickListener(new PopActionClickListener() {
+            @Override
+            public void onActionClick(int index, Object data) {
+                mFoldedLayout.markConversationFold((ConversationInfo) data, false);
+            }
+        });
+        List<PopMenuAction> conversationPopActions = new ArrayList<PopMenuAction>();
+        conversationPopActions.add(action);
+
+        action = new PopMenuAction();
         action.setActionName(getResources().getString(R.string.not_display));
         action.setWeight(800);
         action.setActionClickListener(new PopActionClickListener() {
@@ -132,7 +156,6 @@ public class TUIFoldedConversationFragment extends BaseFragment {
                 mFoldedLayout.markConversationHidden((ConversationInfo) data);
             }
         });
-        List<PopMenuAction> conversationPopActions = new ArrayList<PopMenuAction>();
         conversationPopActions.add(action);
 
         action = new PopMenuAction();

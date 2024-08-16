@@ -21,6 +21,11 @@ public interface IConversationLayout extends ILayout {
     void markConversationFold(ConversationInfo conversation);
 
     /**
+     * Mark conversation fold or unfold
+     */
+    void markConversationFold(ConversationInfo conversation, boolean markFold);
+
+    /**
      * Hide normal conversation
      */
     void markConversationHidden(ConversationInfo conversation);

@@ -151,6 +151,19 @@ public class TUIConversationFragment extends BaseFragment {
         mConversationPopActions.addAll(conversationPopActions);
     }
 
+    private void addMarkFoldPopMenuAction() {
+        PopMenuAction action = new PopMenuAction();
+        action.setActionName(getResources().getString(R.string.mark_fold));
+        action.setWeight(900);
+        action.setActionClickListener(new PopActionClickListener() {
+            @Override
+            public void onActionClick(int index, Object data) {
+                mConversationLayout.markConversationFold((ConversationInfo) data, true);
+            }
+        });
+        mConversationPopActions.add(0, action);
+    }
+
     private void addMarkUnreadPopMenuAction(boolean markUnread) {
         PopMenuAction action = new PopMenuAction();
         action.setActionClickListener(new PopActionClickListener() {
@@ -214,6 +227,7 @@ public class TUIConversationFragment extends BaseFragment {
                 }
             }
 
+            addMarkFoldPopMenuAction();
             addDeletePopMenuAction();
 
             mConversationPopActions.addAll(addMoreConversationAction(conversationInfo));

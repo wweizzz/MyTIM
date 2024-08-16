@@ -5,6 +5,8 @@
     <string name="quit_chat_top">取消置顶</string>
     <string name="mark_unread">标为未读</string>
     <string name="mark_read">标为已读</string>
+    <string name="mark_unfold">标为不折叠</string>
+    <string name="mark_fold">标为折叠</string>
     <string name="not_display">不显示</string>
 
     <string name="forward_select_new_chat">创建新聊天</string>

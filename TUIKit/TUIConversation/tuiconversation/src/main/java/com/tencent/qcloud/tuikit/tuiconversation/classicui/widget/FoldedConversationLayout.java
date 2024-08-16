@@ -73,7 +73,18 @@ public class FoldedConversationLayout extends RelativeLayout implements IConvers
     public void clearConversation(ConversationInfo conversation) {}
 
     @Override
-    public void markConversationFold(ConversationInfo conversation) {}
+    public void markConversationFold(ConversationInfo conversation) {
+        if (presenter != null) {
+            presenter.markConversationFold(conversation, true);
+        }
+    }
+
+    @Override
+    public void markConversationFold(ConversationInfo conversation, boolean markFold) {
+        if (presenter != null) {
+            presenter.markConversationFold(conversation, markFold);
+        }
+    }
 
     @Override
     public void markConversationHidden(ConversationInfo conversation) {

@@ -337,6 +337,27 @@ public class ConversationFoldPresenter {
         }
     }
 
+    public void markConversationFold(ConversationInfo conversationInfo, boolean isFold) {
+        if (conversationInfo == null || TextUtils.isEmpty(conversationInfo.getConversationId())) {
+            TUIConversationLog.e(TAG, "markConversationFold error: invalid conversationInfo");
+            return;
+        }
+
+        provider.markConversationFold(conversationInfo.getConversationId(), isFold, new IUIKitCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                conversationInfo.setMarkHidden(isFold);
+                TUIConversationLog.i(TAG, "markConversationFold success, conversationID:" + conversationInfo.getConversationId() + ", isFold:" + isFold);
+            }
+
+            @Override
+            public void onError(String module, int errCode, String errMsg) {
+                TUIConversationLog.e(
+                        TAG, "markConversationFold error, conversationID:" + conversationInfo.getConversationId() + ", code:" + errCode + "|msg:" + errMsg);
+            }
+        });
+    }
+
     public void clearFoldMarkAndDeleteConversation(ConversationInfo conversation) {
         HashMap<String, Object> param = new HashMap<>();
         param.put(TUIConstants.TUIConversation.CONVERSATION_ID, conversation.getConversationId());

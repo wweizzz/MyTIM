@@ -77,6 +77,9 @@ public class ForwardSelectLayout extends RelativeLayout implements IConversation
     public void markConversationFold(ConversationInfo conversation) {}
 
     @Override
+    public void markConversationFold(ConversationInfo conversation, boolean markFold) {}
+
+    @Override
     public void markConversationHidden(ConversationInfo conversation) {}
 
     @Override
