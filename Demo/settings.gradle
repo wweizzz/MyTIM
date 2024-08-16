@@ -32,10 +32,6 @@ if (currentVersion == "7.0") {
 
 include ':app'
 
-
-include ':tuicore'
-project(':tuicore').projectDir = new File(settingsDir, '../TUIKit/TUICore/tuicore')
-
 include ':timcommon'
 project(':timcommon').projectDir = new File(settingsDir, '../TUIKit/TIMCommon/timcommon')
 

@@ -73,7 +73,7 @@ public class TUIFoldedConversationFragment extends BaseFragment {
         });
 
         presenter = new ConversationFoldPresenter();
-        presenter.initListener();
+        presenter.setConversationListener();
 
         mFoldedLayout.setPresenter(presenter);
         mFoldedLayout.initDefault();

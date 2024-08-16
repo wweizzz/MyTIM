@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 import com.tencent.qcloud.tuikit.timcommon.component.TitleBarLayout;
-import com.tencent.qcloud.tuikit.timcommon.component.interfaces.IUIKitCallback;
 import com.tencent.qcloud.tuikit.tuiconversation.R;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.classicui.interfaces.IConversationLayout;
@@ -66,7 +65,7 @@ public class FoldedConversationLayout extends RelativeLayout implements IConvers
     @Override
     public void deleteConversation(ConversationInfo conversation) {
         if (presenter != null) {
-            presenter.deleteConversation(conversation);
+            presenter.clearFoldMarkAndDeleteConversation(conversation);
         }
     }
 

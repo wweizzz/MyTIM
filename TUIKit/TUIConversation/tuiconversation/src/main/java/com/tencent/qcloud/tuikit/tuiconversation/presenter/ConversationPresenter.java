@@ -80,29 +80,10 @@ public class ConversationPresenter implements IConversationPresenter {
     @Override
     public void setConversationListener() {
         conversationEventListener = new ConversationEventListener() {
-            @Override
-            public void deleteConversation(String chatId, boolean isGroup) {
-                ConversationPresenter.this.deleteConversation(chatId, isGroup);
-            }
-
-            @Override
-            public void clearConversation(String chatId, boolean isGroup) {
-                ConversationPresenter.this.clearConversation(chatId, isGroup);
-            }
 
             @Override
             public void clearFoldMarkAndDeleteConversation(String conversationId) {
                 ConversationPresenter.this.clearFoldMarkAndDeleteConversation(conversationId);
-            }
-
-            @Override
-            public void setConversationTop(String chatId, boolean isTop) {
-                ConversationPresenter.this.setConversationTop(chatId, isTop);
-            }
-
-            @Override
-            public boolean isTopConversation(String chatId) {
-                return ConversationPresenter.this.isTopConversation(chatId);
             }
 
             @Override
@@ -138,27 +119,17 @@ public class ConversationPresenter implements IConversationPresenter {
             }
 
             @Override
-            public void onFriendRemarkChanged(String id, String remark) {
-                ConversationPresenter.this.onFriendRemarkChanged(id, remark);
-            }
-
-            @Override
             public void onUserStatusChanged(List<V2TIMUserStatus> userStatusList) {
                 ConversationPresenter.this.onUserStatusChanged(userStatusList);
             }
 
             @Override
-            public void refreshUserStatusFragmentUI() {
-                ConversationPresenter.this.updateAdapter();
-            }
-
-            @Override
             public void onReceiveMessage(String conversationID, boolean isTypingMessage) {
-                processNewMessage(conversationID, isTypingMessage);
+                ConversationPresenter.this.processNewMessage(conversationID, isTypingMessage);
             }
 
             @Override
-            public void onMessageSendForHideConversation(String conversationID) {
+            public void onReceiveMessageSendForHideConversation(String conversationID) {
                 ConversationPresenter.this.onMessageSendForHideConversation(conversationID);
             }
 
@@ -449,7 +420,7 @@ public class ConversationPresenter implements IConversationPresenter {
             changedInfoList = processConversationListWithFold(infoList);
         }
 
-        if (changedInfoList.size() == 0) {
+        if (changedInfoList.isEmpty()) {
             return;
         }
 
@@ -879,29 +850,6 @@ public class ConversationPresenter implements IConversationPresenter {
         LocalBroadcastManager.getInstance(TUIConversationService.getAppContext()).sendBroadcast(intent);
     }
 
-    public void updateUnreadTotalByDiff(int diff) {
-        provider.getTotalUnreadMessageCount(new IUIKitCallback<Long>() {
-            @Override
-            public void onSuccess(Long data) {
-                int sdkUnreadCount = data.intValue();
-                TUIConversationLog.i(TAG, "updateUnreadTotalByDiff:" + sdkUnreadCount);
-                totalUnreadCount = sdkUnreadCount + diff;
-                HashMap<String, Object> param = new HashMap<>();
-                param.put(TUIConstants.TUIConversation.TOTAL_UNREAD_COUNT, totalUnreadCount);
-                TUICore.notifyEvent(TUIConstants.TUIConversation.EVENT_UNREAD, TUIConstants.TUIConversation.EVENT_SUB_KEY_UNREAD_CHANGED, param);
-
-                Intent intent = new Intent();
-                intent.setAction(TUIConstants.CONVERSATION_UNREAD_COUNT_ACTION);
-                intent.putExtra(TUIConstants.UNREAD_COUNT_EXTRA, totalUnreadCount);
-                LocalBroadcastManager.getInstance(TUIConversationService.getAppContext()).sendBroadcast(intent);
-            }
-
-            @Override
-            public void onError(String module, int errCode, String errMsg) {
-            }
-        });
-    }
-
     public void setConversationTop(final ConversationInfo conversation) {
         TUIConversationLog.i(TAG, "setConversationTop" + "|conversation:" + conversation);
         final boolean setTop = !conversation.isTop();
@@ -1177,24 +1125,6 @@ public class ConversationPresenter implements IConversationPresenter {
         }
     }
 
-    public void onFriendRemarkChanged(String id, String remark) {
-        for (int i = 0; i < loadedConversationInfoList.size(); i++) {
-            ConversationInfo info = loadedConversationInfoList.get(i);
-            if (info.getId().equals(id) && !info.isGroup()) {
-                String title = info.getShowName();
-                if (!TextUtils.isEmpty(remark)) {
-                    title = remark;
-                }
-                info.setTitle(title);
-                if (adapter != null) {
-                    adapter.onDataSourceChanged(loadedConversationInfoList);
-                    adapter.onItemChanged(i);
-                }
-                break;
-            }
-        }
-    }
-
     public void onMessageSendForHideConversation(String id) {
         if (TextUtils.isEmpty(id)) {
             return;
@@ -1262,12 +1192,6 @@ public class ConversationPresenter implements IConversationPresenter {
             public void onError(String module, int errCode, String errMsg) {
             }
         });
-    }
-
-    public void updateAdapter() {
-        if (adapter != null) {
-            adapter.onViewNeedRefresh();
-        }
     }
 
     public void onConversationDeleted(List<String> conversationIdList) {

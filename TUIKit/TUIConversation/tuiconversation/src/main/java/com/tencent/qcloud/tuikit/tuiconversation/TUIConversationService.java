@@ -13,7 +13,6 @@ import com.tencent.imsdk.v2.V2TIMUserStatus;
 import com.tencent.qcloud.tuicore.ServiceInitializer;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
-import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.TUIThemeManager;
 import com.tencent.qcloud.tuicore.annotations.TUIInitializerDependency;
 import com.tencent.qcloud.tuicore.annotations.TUIInitializerID;
@@ -21,17 +20,14 @@ import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.qcloud.tuicore.interfaces.ITUIService;
 import com.tencent.qcloud.tuicore.interfaces.TUIInitializer;
 import com.tencent.qcloud.tuikit.timcommon.bean.TUIMessageBean;
-import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationGroupBean;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.ConversationUtils;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationLog;
 import com.tencent.qcloud.tuikit.tuiconversation.listener.ConversationEventListener;
 import com.tencent.qcloud.tuikit.tuiconversation.listener.ConversationGroupNotifyListener;
-import com.tencent.qcloud.tuikit.tuiconversation.presenter.ConversationPresenter;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +47,7 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
 
     private SoftReference<ConversationEventListener> conversationEventListener;
     private final List<SoftReference<ConversationEventListener>> conversationEventListenerList = new ArrayList<>();
+
     private SoftReference<ConversationGroupNotifyListener> conversationGroupNotifyListener;
     private int conversationAllGroupUnreadDiff = 0;
 
@@ -74,33 +71,11 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
     }
 
     private void initEvent() {
-        TUICore.registerEvent(TUIConstants.TUIGroup.EVENT_GROUP, TUIConstants.TUIGroup.EVENT_SUB_KEY_EXIT_GROUP, this);
-        TUICore.registerEvent(TUIConstants.TUIGroup.EVENT_GROUP, TUIConstants.TUIGroup.EVENT_SUB_KEY_MEMBER_KICKED_GROUP, this);
-        TUICore.registerEvent(TUIConstants.TUIGroup.EVENT_GROUP, TUIConstants.TUIGroup.EVENT_SUB_KEY_GROUP_DISMISS, this);
-        TUICore.registerEvent(TUIConstants.TUIGroup.EVENT_GROUP, TUIConstants.TUIGroup.EVENT_SUB_KEY_GROUP_RECYCLE, this);
-        TUICore.registerEvent(TUIConstants.TUIGroup.EVENT_GROUP, TUIConstants.TUIGroup.EVENT_SUB_KEY_CLEAR_MESSAGE, this);
-
-        TUICore.registerEvent(TUIConstants.TUIContact.EVENT_USER, TUIConstants.TUIContact.EVENT_SUB_KEY_CLEAR_MESSAGE, this);
-        TUICore.registerEvent(TUIConstants.TUIContact.EVENT_FRIEND_INFO_CHANGED, TUIConstants.TUIContact.EVENT_SUB_KEY_FRIEND_REMARK_CHANGED, this);
-
         TUICore.registerEvent(
                 TUIConstants.TUIChat.EVENT_KEY_RECEIVE_MESSAGE, TUIConstants.TUIChat.EVENT_SUB_KEY_CONVERSATION_ID, this);
 
         TUICore.registerEvent(
                 TUIConstants.TUIConversation.EVENT_KEY_MESSAGE_SEND_FOR_CONVERSATION, TUIConstants.TUIConversation.EVENT_SUB_KEY_MESSAGE_SEND_FOR_CONVERSATION, this);
-
-        TUICore.registerEvent(
-                TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY, TUIConversationConstants.EVENT_CONVERSATION_GROUP_ADD_DATA, this);
-        TUICore.registerEvent(
-                TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY, TUIConversationConstants.EVENT_CONVERSATION_GROUP_ADD_MARK_DATA, this);
-        TUICore.registerEvent(
-                TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_ADD, this);
-        TUICore.registerEvent(
-                TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_DELETE, this);
-        TUICore.registerEvent(
-                TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_RENAME, this);
-        TUICore.registerEvent(
-                TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_UNREAD_COUNT, this);
 
         TUICore.registerEvent(
                 TUIConstants.TUIChat.Event.MessageDisplayString.KEY, TUIConstants.TUIChat.Event.MessageDisplayString.SUB_KEY_PROCESS_MESSAGE, this);
@@ -110,47 +85,17 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
     public Object onCall(String method, Map<String, Object> param) {
         Bundle result = new Bundle();
 
-        if (TextUtils.equals(method, TUIConversationConstants.CONVERSATION_ALL_GROUP_UNREAD_CHANGE_BY_DIFF)) {
-            if (param == null) {
-                return result;
-            }
-            ConversationEventListener eventListener = getConversationEventListener();
-            if (eventListener == null) {
-                int diff = (int) param.get(TUIConversationConstants.CONVERSATION_ALL_GROUP_UNREAD_DIFF);
-                conversationAllGroupUnreadDiff += diff;
-                ConversationPresenter presenter = new ConversationPresenter();
-                presenter.updateUnreadTotalByDiff(conversationAllGroupUnreadDiff);
-            }
-        }
-
         ConversationEventListener conversationEventListener = getInstance().getConversationEventListener();
         if (conversationEventListener == null) {
             TUIConversationLog.e(TAG, "execute " + method + " failed , conversationEvent listener is null");
             return result;
         }
-        if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_IS_TOP_CONVERSATION, method)) {
-            String chatId = (String) param.get(TUIConstants.TUIConversation.CHAT_ID);
-            if (!TextUtils.isEmpty(chatId)) {
-                boolean isTop = conversationEventListener.isTopConversation(chatId);
-                result.putBoolean(TUIConstants.TUIConversation.IS_TOP, isTop);
-            }
-        } else if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_SET_TOP_CONVERSATION, method)) {
-            String chatId = (String) param.get(TUIConstants.TUIConversation.CHAT_ID);
-            boolean isTop = (boolean) param.get(TUIConstants.TUIConversation.IS_SET_TOP);
-            if (!TextUtils.isEmpty(chatId)) {
-                conversationEventListener.setConversationTop(chatId, isTop);
-            }
-        } else if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_GET_TOTAL_UNREAD_COUNT, method)) {
+
+        if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_GET_TOTAL_UNREAD_COUNT, method)) {
             return conversationEventListener.getUnreadTotal();
-        } else if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_UPDATE_TOTAL_UNREAD_COUNT, method)) {
-            HashMap<String, Object> unreadMap = new HashMap<>();
-            long totalUnread = conversationEventListener.getUnreadTotal();
-            unreadMap.put(TUIConstants.TUIConversation.TOTAL_UNREAD_COUNT, totalUnread);
-            TUICore.notifyEvent(TUIConstants.TUIConversation.EVENT_UNREAD, TUIConstants.TUIConversation.EVENT_SUB_KEY_UNREAD_CHANGED, unreadMap);
         } else if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_DELETE_CONVERSATION, method)) {
             String conversationId = (String) param.get(TUIConstants.TUIConversation.CONVERSATION_ID);
             conversationEventListener.clearFoldMarkAndDeleteConversation(conversationId);
-
             List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
             for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
                 conversationEventObserver.clearFoldMarkAndDeleteConversation(conversationId);
@@ -161,124 +106,19 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
 
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
-        if (TextUtils.equals(key, TUIConstants.TUIGroup.EVENT_GROUP)) {
-            handleGroupEvent(subKey, param);
-        } else if (key.equals(TUIConstants.TUIContact.EVENT_USER)) {
-            handleContactUserEvent(subKey, param);
-        } else if (key.equals(TUIConstants.TUIContact.EVENT_FRIEND_INFO_CHANGED)) {
-            handleContactFriendInfoChangedEvent(subKey, param);
-        } else if (key.equals(TUIConstants.TUIChat.EVENT_KEY_RECEIVE_MESSAGE)) {
-            handleChatReceiveMessageEvent(subKey, param);
+        if (key.equals(TUIConstants.TUIChat.EVENT_KEY_RECEIVE_MESSAGE)) {
+            handleChatEvent(subKey, param);
         } else if (TextUtils.equals(key, TUIConstants.TUIConversation.EVENT_KEY_MESSAGE_SEND_FOR_CONVERSATION)) {
             handleConversationEvent(subKey, param);
-        } else if (TextUtils.equals(key, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY)) {
-            handleConversationGroupChangedEvent(subKey, param);
         } else if (TextUtils.equals(key, TUIConstants.TUIChat.Event.MessageDisplayString.KEY)) {
             handleMessageBeanUpdateEvent(subKey, param);
         }
     }
 
     /**
-     * TUIGroup.EVENT_GROUP
-     */
-    private void handleGroupEvent(String subKey, Map<String, Object> param) {
-        if (TextUtils.equals(subKey, TUIConstants.TUIGroup.EVENT_SUB_KEY_EXIT_GROUP)
-                || TextUtils.equals(subKey, TUIConstants.TUIGroup.EVENT_SUB_KEY_GROUP_DISMISS)
-                || TextUtils.equals(subKey, TUIConstants.TUIGroup.EVENT_SUB_KEY_GROUP_RECYCLE)) {
-            ConversationEventListener eventListener = getConversationEventListener();
-            String groupId = null;
-            if (param != null) {
-                groupId = (String) getOrDefault(param.get(TUIConstants.TUIGroup.GROUP_ID), "");
-            }
-            if (eventListener != null) {
-                eventListener.deleteConversation(groupId, true);
-            }
-            List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
-            for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                conversationEventObserver.deleteConversation(groupId, true);
-            }
-        } else if (TextUtils.equals(subKey, TUIConstants.TUIGroup.EVENT_SUB_KEY_MEMBER_KICKED_GROUP)) {
-            if (param == null) {
-                return;
-            }
-            String groupId = (String) getOrDefault(param.get(TUIConstants.TUIGroup.GROUP_ID), "");
-            ArrayList<String> memberList = (ArrayList<String>) param.get(TUIConstants.TUIGroup.GROUP_MEMBER_ID_LIST);
-            if (TextUtils.isEmpty(groupId) || memberList == null || memberList.isEmpty()) {
-                return;
-            }
-            for (String id : memberList) {
-                if (TextUtils.equals(id, TUILogin.getLoginUser())) {
-                    ConversationEventListener eventListener = getConversationEventListener();
-                    if (eventListener != null) {
-                        eventListener.deleteConversation(groupId, true);
-                    }
-                    List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
-                    for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                        conversationEventObserver.deleteConversation(groupId, true);
-                    }
-                    break;
-                }
-            }
-        } else if (TextUtils.equals(subKey, TUIConstants.TUIGroup.EVENT_SUB_KEY_CLEAR_MESSAGE)) {
-            String groupId = (String) getOrDefault(param.get(TUIConstants.TUIGroup.GROUP_ID), "");
-            ConversationEventListener eventListener = getConversationEventListener();
-            if (eventListener != null) {
-                eventListener.clearConversation(groupId, true);
-            }
-            List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
-            for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                conversationEventObserver.clearConversation(groupId, true);
-            }
-        }
-    }
-
-    /**
-     * TUIContact.EVENT_USER
-     */
-    private void handleContactUserEvent(String subKey, Map<String, Object> param) {
-        if (subKey.equals(TUIConstants.TUIContact.EVENT_SUB_KEY_CLEAR_MESSAGE)) {
-            if (param == null || param.isEmpty()) {
-                return;
-            }
-            String userID = (String) getOrDefault(param.get(TUIConstants.TUIContact.FRIEND_ID), "");
-            ConversationEventListener eventListener = getConversationEventListener();
-            if (eventListener != null) {
-                eventListener.clearConversation(userID, false);
-            }
-            List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
-            for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                conversationEventObserver.clearConversation(userID, false);
-            }
-        }
-    }
-
-    /**
-     * TUIContact.EVENT_FRIEND_INFO_CHANGED
-     */
-    private void handleContactFriendInfoChangedEvent(String subKey, Map<String, Object> param) {
-        if (subKey.equals(TUIConstants.TUIContact.EVENT_SUB_KEY_FRIEND_REMARK_CHANGED)) {
-            if (param == null || param.isEmpty()) {
-                return;
-            }
-            ConversationEventListener conversationEventListener = getInstance().getConversationEventListener();
-            if (conversationEventListener == null) {
-                return;
-            }
-            String id = (String) param.get(TUIConstants.TUIContact.FRIEND_ID);
-            String remark = (String) param.get(TUIConstants.TUIContact.FRIEND_REMARK);
-            conversationEventListener.onFriendRemarkChanged(id, remark);
-
-            List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
-            for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                conversationEventObserver.onFriendRemarkChanged(id, remark);
-            }
-        }
-    }
-
-    /**
      * TUIChat.EVENT_KEY_RECEIVE_MESSAGE
      */
-    private void handleChatReceiveMessageEvent(String subKey, Map<String, Object> param) {
+    private void handleChatEvent(String subKey, Map<String, Object> param) {
         if (subKey.equals(TUIConstants.TUIChat.EVENT_SUB_KEY_CONVERSATION_ID)) {
             if (param == null || param.isEmpty()) {
                 return;
@@ -310,88 +150,7 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
             String conversationID = (String) param.get(TUIConstants.TUIConversation.CONVERSATION_ID);
             ConversationEventListener eventListener = getConversationEventListener();
             if (eventListener != null) {
-                eventListener.onMessageSendForHideConversation(conversationID);
-            }
-        }
-    }
-
-    /**
-     * TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_KEY
-     */
-    private void handleConversationGroupChangedEvent(String subKey, Map<String, Object> param) {
-        if (TextUtils.equals(subKey, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_ADD)) {
-            if (param == null || param.isEmpty()) {
-                TUIConversationLog.e(TAG, "EVENT_CONVERSATION_GROUP_CHANGE_ADD param is null");
-                return;
-            }
-            ConversationGroupBean bean = (ConversationGroupBean) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_ADD);
-            ConversationGroupNotifyListener eventListener = getConversationGroupNotifyListener();
-            if (eventListener != null) {
-                eventListener.notifyGroupAdd(bean);
-            } else {
-                TUIConversationLog.e(TAG, "eventListener is null");
-            }
-        } else if (TextUtils.equals(subKey, TUIConversationConstants.EVENT_CONVERSATION_GROUP_ADD_DATA)) {
-            if (param == null || param.isEmpty()) {
-                TUIConversationLog.e(TAG, "EVENT_CONVERSATION_GROUP_ADD_DATA param is null");
-                return;
-            }
-            List<ConversationGroupBean> beans = (List<ConversationGroupBean>) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_ADD_DATA);
-            ConversationGroupNotifyListener eventListener = getConversationGroupNotifyListener();
-            if (eventListener != null) {
-                eventListener.notifyGroupsAdd(beans);
-            } else {
-                TUIConversationLog.e(TAG, "eventListener is null");
-            }
-        } else if (TextUtils.equals(subKey, TUIConversationConstants.EVENT_CONVERSATION_GROUP_ADD_MARK_DATA)) {
-            if (param == null || param.isEmpty()) {
-                TUIConversationLog.e(TAG, "EVENT_CONVERSATION_GROUP_ADD_MARK_DATA param is null");
-                return;
-            }
-            List<ConversationGroupBean> beans = (List<ConversationGroupBean>) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_ADD_MARK_DATA);
-            ConversationGroupNotifyListener eventListener = getConversationGroupNotifyListener();
-            if (eventListener != null) {
-                eventListener.notifyMarkGroupsAdd(beans);
-            } else {
-                TUIConversationLog.e(TAG, "eventListener is null");
-            }
-        } else if (TextUtils.equals(subKey, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_DELETE)) {
-            if (param == null || param.isEmpty()) {
-                TUIConversationLog.e(TAG, "EVENT_CONVERSATION_GROUP_CHANGE_DELETE param is null");
-                return;
-            }
-            String groupName = (String) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_DELETE);
-            ConversationGroupNotifyListener eventListener = getConversationGroupNotifyListener();
-            if (eventListener != null) {
-                eventListener.notifyGroupDelete(groupName);
-            } else {
-                TUIConversationLog.e(TAG, "eventListener is null");
-            }
-        } else if (TextUtils.equals(subKey, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_RENAME)) {
-            if (param == null || param.isEmpty()) {
-                TUIConversationLog.e(TAG, "EVENT_CONVERSATION_GROUP_CHANGE_RENAME param is null");
-                return;
-            }
-            String oldName = (String) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_RENAME);
-            String newName = (String) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_GROUP_NAME);
-            ConversationGroupNotifyListener eventListener = getConversationGroupNotifyListener();
-            if (eventListener != null) {
-                eventListener.notifyGroupRename(oldName, newName);
-            } else {
-                TUIConversationLog.e(TAG, "eventListener is null");
-            }
-        } else if (TextUtils.equals(subKey, TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_UNREAD_COUNT)) {
-            if (param == null || param.isEmpty()) {
-                TUIConversationLog.e(TAG, "EVENT_CONVERSATION_GROUP_CHANGE_UNREAD_COUNT param is null");
-                return;
-            }
-            long count = (long) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_UNREAD_COUNT);
-            String groupName = (String) param.get(TUIConversationConstants.EVENT_CONVERSATION_GROUP_CHANGE_GROUP_NAME);
-            ConversationGroupNotifyListener eventListener = getConversationGroupNotifyListener();
-            if (eventListener != null) {
-                eventListener.notifyGroupUnreadMessageCountChanged(groupName, count);
-            } else {
-                TUIConversationLog.e(TAG, "eventListener is null");
+                eventListener.onReceiveMessageSendForHideConversation(conversationID);
             }
         }
     }
@@ -412,13 +171,6 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
                 conversationEventObserver.onConversationLastMessageBeanChanged(conversationID, messageBean);
             }
         }
-    }
-
-    private Object getOrDefault(Object value, Object defaultValue) {
-        if (value != null) {
-            return value;
-        }
-        return defaultValue;
     }
 
     private void initIMListener() {
@@ -610,6 +362,10 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
 
     public void setConversationGroupNotifyListenerNull() {
         this.conversationGroupNotifyListener = null;
+    }
+
+    public int getConversationAllGroupUnreadDiff() {
+        return conversationAllGroupUnreadDiff;
     }
 
     public void setConversationAllGroupUnreadDiff(int diff) {

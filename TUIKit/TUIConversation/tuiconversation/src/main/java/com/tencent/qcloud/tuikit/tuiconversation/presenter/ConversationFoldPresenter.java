@@ -43,27 +43,11 @@ public class ConversationFoldPresenter {
         this.adapter = adapter;
     }
 
-    public void initListener() {
+    public void setConversationListener() {
         conversationEventForMarkObserver = new ConversationEventListener() {
-            @Override
-            public void deleteConversation(String chatId, boolean isGroup) {
-                ConversationFoldPresenter.this.deleteConversationFromUI(chatId, isGroup);
-            }
-
-            @Override
-            public void clearConversation(String chatId, boolean isGroup) {}
-
             @Override
             public void clearFoldMarkAndDeleteConversation(String conversationId) {
                 ConversationFoldPresenter.this.deleteConversationFromUI(conversationId);
-            }
-
-            @Override
-            public void setConversationTop(String chatId, boolean isTop) {}
-
-            @Override
-            public boolean isTopConversation(String chatId) {
-                return false;
             }
 
             @Override
@@ -88,21 +72,15 @@ public class ConversationFoldPresenter {
             }
 
             @Override
-            public void onFriendRemarkChanged(String id, String remark) {}
-
-            @Override
             public void onUserStatusChanged(List<V2TIMUserStatus> userStatusList) {}
 
             @Override
-            public void refreshUserStatusFragmentUI() {}
-
-            @Override
             public void onReceiveMessage(String conversationID, boolean isTypingMessage) {
-                processNewMessage(conversationID, isTypingMessage);
+                ConversationFoldPresenter.this.processNewMessage(conversationID, isTypingMessage);
             }
 
             @Override
-            public void onMessageSendForHideConversation(String conversationID) {}
+            public void onReceiveMessageSendForHideConversation(String conversationID) {}
 
             @Override
             public void onConversationDeleted(List<String> conversationIDList) {
@@ -130,7 +108,7 @@ public class ConversationFoldPresenter {
         provider.loadMarkConversation(filter, 0, GET_CONVERSATION_COUNT, true, new IUIKitCallback<List<ConversationInfo>>() {
             @Override
             public void onSuccess(List<ConversationInfo> conversationInfoList) {
-                if (conversationInfoList.size() == 0) {
+                if (conversationInfoList.isEmpty()) {
                     return;
                 }
 
@@ -164,7 +142,7 @@ public class ConversationFoldPresenter {
     public void onNewConversation(List<ConversationInfo> conversationInfoList) {
         TUIConversationLog.i(TAG, "onNewConversation conversations:" + conversationInfoList);
 
-        if (conversationInfoList.size() == 0) {
+        if (conversationInfoList.isEmpty()) {
             return;
         }
         getLastMessageBean(conversationInfoList);
@@ -236,7 +214,7 @@ public class ConversationFoldPresenter {
             onNewConversation(addInfoList);
         }
 
-        if (changedInfoList.size() == 0) {
+        if (changedInfoList.isEmpty()) {
             return;
         }
 
@@ -359,7 +337,7 @@ public class ConversationFoldPresenter {
         }
     }
 
-    public void deleteConversation(ConversationInfo conversation) {
+    public void clearFoldMarkAndDeleteConversation(ConversationInfo conversation) {
         HashMap<String, Object> param = new HashMap<>();
         param.put(TUIConstants.TUIConversation.CONVERSATION_ID, conversation.getConversationId());
         TUICore.callService(TUIConstants.TUIConversation.SERVICE_NAME, TUIConstants.TUIConversation.METHOD_DELETE_CONVERSATION, param);
@@ -405,22 +383,6 @@ public class ConversationFoldPresenter {
                     TAG, "markConversationRead error, conversationID:" + conversationInfo.getConversationId() + ", code:" + errCode + "|msg:" + errMsg);
             }
         });
-    }
-
-    public void deleteConversationFromUI(String id, boolean isGroup) {
-        if (!isGroup) {
-            return;
-        }
-        for (int i = 0; i < loadedConversationInfoList.size(); i++) {
-            ConversationInfo info = loadedConversationInfoList.get(i);
-            if (TextUtils.equals(info.getId(), id)) {
-                boolean isRemove = loadedConversationInfoList.remove(info);
-                if (adapter != null && isRemove) {
-                    adapter.onItemRemoved(i);
-                }
-                break;
-            }
-        }
     }
 
     public void deleteConversationFromUI(String conversationId) {

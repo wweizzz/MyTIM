@@ -311,12 +311,12 @@ public class ProfileLayout extends FrameLayout implements View.OnClickListener {
     }
 
     private void refreshFragmentUI() {
-        ConversationEventListener conversationEventListener = TUIConversationService.getInstance().getConversationEventListener();
-        if (conversationEventListener != null) {
-            conversationEventListener.refreshUserStatusFragmentUI();
-        } else {
-            DemoLog.e(TAG, "refreshFragmentUI conversationEventListener is null");
-        }
+        //ConversationEventListener conversationEventListener = TUIConversationService.getInstance().getConversationEventListener();
+        //if (conversationEventListener != null) {
+        //    conversationEventListener.refreshUserStatusFragmentUI();
+        //} else {
+        //    DemoLog.e(TAG, "refreshFragmentUI conversationEventListener is null");
+        //}
 
         //List<ContactEventListener> contactEventListenerList = TUIContactService.getInstance().getContactEventListenerList();
         //for (ContactEventListener contactEventListener : contactEventListenerList) {

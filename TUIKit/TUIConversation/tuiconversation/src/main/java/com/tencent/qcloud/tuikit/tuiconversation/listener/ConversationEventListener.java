@@ -34,28 +34,21 @@ public interface ConversationEventListener {
     /**
      * ITUIService
      */
-    boolean isTopConversation(String chatId);
-
-    void setConversationTop(String chatId, boolean isTop);
-
+    // 获取未读数
     long getUnreadTotal();
 
+    // 清除折叠并且删除删除会话
     void clearFoldMarkAndDeleteConversation(String conversationId);
 
     /**
      * ITUINotification
      */
-    void deleteConversation(String chatId, boolean isGroup);
-
-    void clearConversation(String chatId, boolean isGroup);
-
-    void onFriendRemarkChanged(String id, String remark);
-
+    // 收到消息
     void onReceiveMessage(String conversationID, boolean isTypingMessage);
 
-    void onMessageSendForHideConversation(String conversationID);
+    // 收到消息来自隐藏会话
+    void onReceiveMessageSendForHideConversation(String conversationID);
 
+    // 会话最后一条信息变更
     void onConversationLastMessageBeanChanged(String conversationID, TUIMessageBean messageBean);
-
-    void refreshUserStatusFragmentUI();
 }

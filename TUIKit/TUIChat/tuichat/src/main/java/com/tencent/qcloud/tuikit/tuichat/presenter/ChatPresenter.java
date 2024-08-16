@@ -899,6 +899,8 @@ public abstract class ChatPresenter {
             conversationId = "c2c_" + chatInfo.getId();
         }
 
+        Log.e("TAG", "notifyConversationInfo " + conversationId);
+
         Map<String, Object> param = new HashMap<>();
         param.put(TUIConstants.TUIConversation.CONVERSATION_ID, conversationId);
         TUICore.notifyEvent(TUIConstants.TUIConversation.EVENT_KEY_MESSAGE_SEND_FOR_CONVERSATION,
