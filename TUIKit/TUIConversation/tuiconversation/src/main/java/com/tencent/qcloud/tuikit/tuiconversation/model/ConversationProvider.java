@@ -24,7 +24,6 @@ import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationUserStatusBean
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.ConversationUtils;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationLog;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationUtils;
-import com.tencent.qcloud.tuikit.tuiconversation.config.TUIConversationConfig;
 import com.tencent.qcloud.tuikit.tuiconversation.interfaces.IConversationProvider;
 
 import java.util.ArrayList;
@@ -41,8 +40,8 @@ public class ConversationProvider implements IConversationProvider {
     protected boolean isFinished = false;
     protected long nextLoadSeq = 0L;
 
-    private List<ConversationInfo> markConversationInfoList = new ArrayList<>();
-    private HashMap<String, V2TIMConversation> markUnreadMap = new HashMap<>();
+    private final List<ConversationInfo> markConversationInfoList = new ArrayList<>();
+    private final HashMap<String, V2TIMConversation> markUnreadMap = new HashMap<>();
 
     @Override
     public void loadMoreConversation(int loadCount, IUIKitCallback<List<ConversationInfo>> callBack) {
@@ -174,53 +173,53 @@ public class ConversationProvider implements IConversationProvider {
     }
 
     @Override
-    public void markConversationFold(String conversationID, boolean isFold, IUIKitCallback<Void> callback) {
-        V2TIMManager.getConversationManager().markConversation(
-                Collections.singletonList(conversationID), V2TIMConversation.V2TIM_CONVERSATION_MARK_TYPE_FOLD, isFold, new V2TIMValueCallback<List<V2TIMConversationOperationResult>>() {
-                    @Override
-                    public void onSuccess(List<V2TIMConversationOperationResult> v2TIMConversationOperationResults) {
-                        if (v2TIMConversationOperationResults.isEmpty()) {
-                            return;
-                        }
-                        V2TIMConversationOperationResult result = v2TIMConversationOperationResults.get(0);
-                        if (result.getResultCode() == BaseConstants.ERR_SUCC) {
-                            TUIConversationUtils.callbackOnSuccess(callback, null);
-                        } else {
-                            TUIConversationUtils.callbackOnError(callback, TAG, result.getResultCode(), result.getResultInfo());
-                        }
-                    }
+    public void deleteConversation(String conversationId, IUIKitCallback<Void> callBack) {
+        V2TIMManager.getConversationManager().deleteConversation(conversationId, new V2TIMCallback() {
+            @Override
+            public void onError(int code, String desc) {
+                TUIConversationLog.e(TAG, "deleteConversation error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
+                TUIConversationUtils.callbackOnError(callBack, TAG, code, desc);
+            }
 
-                    @Override
-                    public void onError(int code, String desc) {
-                        TUIConversationLog.e(TAG, "markConversationFold error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
-                        TUIConversationUtils.callbackOnError(callback, TAG, code, desc);
-                    }
-                });
+            @Override
+            public void onSuccess() {
+                TUIConversationLog.i(TAG, "deleteConversation success");
+                TUIConversationUtils.callbackOnSuccess(callBack, null);
+            }
+        });
     }
 
     @Override
-    public void markConversationHidden(String conversationID, boolean isHidden, IUIKitCallback<Void> callback) {
-        V2TIMManager.getConversationManager().markConversation(Collections.singletonList(conversationID), V2TIMConversation.V2TIM_CONVERSATION_MARK_TYPE_HIDE, isHidden,
-                new V2TIMValueCallback<List<V2TIMConversationOperationResult>>() {
-                    @Override
-                    public void onSuccess(List<V2TIMConversationOperationResult> v2TIMConversationOperationResults) {
-                        if (v2TIMConversationOperationResults.isEmpty()) {
-                            return;
-                        }
-                        V2TIMConversationOperationResult result = v2TIMConversationOperationResults.get(0);
-                        if (result.getResultCode() == BaseConstants.ERR_SUCC) {
-                            TUIConversationUtils.callbackOnSuccess(callback, null);
-                        } else {
-                            TUIConversationUtils.callbackOnError(callback, TAG, result.getResultCode(), result.getResultInfo());
-                        }
-                    }
+    public void clearHistoryMessage(String userId, boolean isGroup, IUIKitCallback<Void> callBack) {
+        if (isGroup) {
+            V2TIMManager.getMessageManager().clearGroupHistoryMessage(userId, new V2TIMCallback() {
+                @Override
+                public void onError(int code, String desc) {
+                    TUIConversationLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
+                    TUIConversationUtils.callbackOnError(callBack, TAG, code, desc);
+                }
 
-                    @Override
-                    public void onError(int code, String desc) {
-                        TUIConversationLog.e(TAG, "markConversationHidden error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
-                        TUIConversationUtils.callbackOnError(callback, TAG, code, desc);
-                    }
-                });
+                @Override
+                public void onSuccess() {
+                    TUIConversationLog.i(TAG, "clearConversationMessage success");
+                    TUIConversationUtils.callbackOnSuccess(callBack, null);
+                }
+            });
+        } else {
+            V2TIMManager.getMessageManager().clearC2CHistoryMessage(userId, new V2TIMCallback() {
+                @Override
+                public void onError(int code, String desc) {
+                    TUIConversationLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
+                    TUIConversationUtils.callbackOnError(callBack, TAG, code, desc);
+                }
+
+                @Override
+                public void onSuccess() {
+                    TUIConversationLog.i(TAG, "clearConversationMessage success");
+                    TUIConversationUtils.callbackOnSuccess(callBack, null);
+                }
+            });
+        }
     }
 
     @Override
@@ -320,7 +319,57 @@ public class ConversationProvider implements IConversationProvider {
     }
 
     @Override
-    public void cleanConversationUnreadCount(String conversationID, TUICallback callback) {
+    public void markConversationHidden(String conversationID, boolean isHidden, IUIKitCallback<Void> callback) {
+        V2TIMManager.getConversationManager().markConversation(Collections.singletonList(conversationID), V2TIMConversation.V2TIM_CONVERSATION_MARK_TYPE_HIDE, isHidden,
+                new V2TIMValueCallback<List<V2TIMConversationOperationResult>>() {
+                    @Override
+                    public void onSuccess(List<V2TIMConversationOperationResult> v2TIMConversationOperationResults) {
+                        if (v2TIMConversationOperationResults.isEmpty()) {
+                            return;
+                        }
+                        V2TIMConversationOperationResult result = v2TIMConversationOperationResults.get(0);
+                        if (result.getResultCode() == BaseConstants.ERR_SUCC) {
+                            TUIConversationUtils.callbackOnSuccess(callback, null);
+                        } else {
+                            TUIConversationUtils.callbackOnError(callback, TAG, result.getResultCode(), result.getResultInfo());
+                        }
+                    }
+
+                    @Override
+                    public void onError(int code, String desc) {
+                        TUIConversationLog.e(TAG, "markConversationHidden error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
+                        TUIConversationUtils.callbackOnError(callback, TAG, code, desc);
+                    }
+                });
+    }
+
+    @Override
+    public void markConversationFold(String conversationID, boolean isFold, IUIKitCallback<Void> callback) {
+        V2TIMManager.getConversationManager().markConversation(
+                Collections.singletonList(conversationID), V2TIMConversation.V2TIM_CONVERSATION_MARK_TYPE_FOLD, isFold, new V2TIMValueCallback<List<V2TIMConversationOperationResult>>() {
+                    @Override
+                    public void onSuccess(List<V2TIMConversationOperationResult> v2TIMConversationOperationResults) {
+                        if (v2TIMConversationOperationResults.isEmpty()) {
+                            return;
+                        }
+                        V2TIMConversationOperationResult result = v2TIMConversationOperationResults.get(0);
+                        if (result.getResultCode() == BaseConstants.ERR_SUCC) {
+                            TUIConversationUtils.callbackOnSuccess(callback, null);
+                        } else {
+                            TUIConversationUtils.callbackOnError(callback, TAG, result.getResultCode(), result.getResultInfo());
+                        }
+                    }
+
+                    @Override
+                    public void onError(int code, String desc) {
+                        TUIConversationLog.e(TAG, "markConversationFold error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
+                        TUIConversationUtils.callbackOnError(callback, TAG, code, desc);
+                    }
+                });
+    }
+
+    @Override
+    public void cleanConversationUnreadMessageCount(String conversationID, TUICallback callback) {
         V2TIMManager.getConversationManager().cleanConversationUnreadMessageCount(conversationID, 0, 0, new V2TIMCallback() {
             @Override
             public void onSuccess() {
@@ -338,147 +387,7 @@ public class ConversationProvider implements IConversationProvider {
     }
 
     @Override
-    public void deleteConversation(String conversationId, IUIKitCallback<Void> callBack) {
-        V2TIMManager.getConversationManager().deleteConversation(conversationId, new V2TIMCallback() {
-            @Override
-            public void onError(int code, String desc) {
-                TUIConversationLog.e(TAG, "deleteConversation error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
-                TUIConversationUtils.callbackOnError(callBack, TAG, code, desc);
-            }
-
-            @Override
-            public void onSuccess() {
-                TUIConversationLog.i(TAG, "deleteConversation success");
-                TUIConversationUtils.callbackOnSuccess(callBack, null);
-            }
-        });
-    }
-
-    @Override
-    public void clearHistoryMessage(String userId, boolean isGroup, IUIKitCallback<Void> callBack) {
-        if (isGroup) {
-            V2TIMManager.getMessageManager().clearGroupHistoryMessage(userId, new V2TIMCallback() {
-                @Override
-                public void onError(int code, String desc) {
-                    TUIConversationLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
-                    TUIConversationUtils.callbackOnError(callBack, TAG, code, desc);
-                }
-
-                @Override
-                public void onSuccess() {
-                    TUIConversationLog.i(TAG, "clearConversationMessage success");
-                    TUIConversationUtils.callbackOnSuccess(callBack, null);
-                }
-            });
-        } else {
-            V2TIMManager.getMessageManager().clearC2CHistoryMessage(userId, new V2TIMCallback() {
-                @Override
-                public void onError(int code, String desc) {
-                    TUIConversationLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
-                    TUIConversationUtils.callbackOnError(callBack, TAG, code, desc);
-                }
-
-                @Override
-                public void onSuccess() {
-                    TUIConversationLog.i(TAG, "clearConversationMessage success");
-                    TUIConversationUtils.callbackOnSuccess(callBack, null);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void getGroupMemberIconList(String groupId, int iconCount, IUIKitCallback<List<Object>> callback) {
-        V2TIMManager.getGroupManager().getGroupMemberList(
-                groupId, V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_FILTER_ALL, 0, new V2TIMValueCallback<V2TIMGroupMemberInfoResult>() {
-                    @Override
-                    public void onError(int code, String desc) {
-                        TUIConversationUtils.callbackOnError(callback, code, desc);
-                        TUIConversationLog.e("ConversationIconView",
-                                "getGroupMemberList failed! groupID:" + groupId + "|code:" + code + "|desc: " + ErrorMessageConverter.convertIMError(code, desc));
-                    }
-
-                    @Override
-                    public void onSuccess(V2TIMGroupMemberInfoResult v2TIMGroupMemberInfoResult) {
-                        List<V2TIMGroupMemberFullInfo> v2TIMGroupMemberFullInfoList = v2TIMGroupMemberInfoResult.getMemberInfoList();
-                        int faceSize = Math.min(v2TIMGroupMemberFullInfoList.size(), iconCount);
-                        final List<Object> urlList = new ArrayList<>();
-                        for (int i = 0; i < faceSize; i++) {
-                            V2TIMGroupMemberFullInfo v2TIMGroupMemberFullInfo = v2TIMGroupMemberFullInfoList.get(i);
-                            urlList.add(v2TIMGroupMemberFullInfo.getFaceUrl());
-                        }
-                        TUIConversationUtils.callbackOnSuccess(callback, urlList);
-                    }
-                });
-    }
-
-    @Override
-    public void loadConversationUserStatus(List<ConversationInfo> dataSource, IUIKitCallback<Map<String, ConversationUserStatusBean>> callback) {
-        if (dataSource == null || dataSource.isEmpty()) {
-            TUIConversationLog.d(TAG, "loadConversationUserStatus datasource is null");
-            return;
-        }
-
-        List<String> userList = new ArrayList<>();
-        for (ConversationInfo itemBean : dataSource) {
-            if (itemBean.isGroup()) {
-                continue;
-            }
-            userList.add(itemBean.getId());
-        }
-        if (userList.isEmpty()) {
-            TUIConversationLog.d(TAG, "loadConversationUserStatus userList is empty");
-            return;
-        }
-        V2TIMManager.getInstance().getUserStatus(userList, new V2TIMValueCallback<List<V2TIMUserStatus>>() {
-            @Override
-            public void onSuccess(List<V2TIMUserStatus> v2TIMUserStatuses) {
-                TUIConversationLog.i(TAG, "getUserStatus success");
-                Map<String, ConversationUserStatusBean> userStatusBeanMap = new HashMap<>();
-                for (V2TIMUserStatus item : v2TIMUserStatuses) {
-                    ConversationUserStatusBean conversationUserStatusBean = new ConversationUserStatusBean();
-                    conversationUserStatusBean.setV2TIMUserStatus(item);
-                    userStatusBeanMap.put(item.getUserID(), conversationUserStatusBean);
-                }
-                TUIConversationUtils.callbackOnSuccess(callback, userStatusBeanMap);
-            }
-
-            @Override
-            public void onError(int code, String desc) {
-                TUIConversationLog.e(TAG, "getUserStatus error code = " + code + ",des = " + desc);
-                TUIConversationUtils.callbackOnError(callback, code, desc);
-                if (code == TUIConstants.BuyingFeature.ERR_SDK_INTERFACE_NOT_SUPPORT && TUIConversationConfig.getInstance().isShowUserStatus()
-                        && BuildConfig.DEBUG) {
-                    ToastUtil.toastLongMessage(desc);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void subscribeConversationUserStatus(List<String> userIdList, IUIKitCallback<Void> callback) {
-        if (userIdList == null || userIdList.isEmpty()) {
-            TUIConversationLog.e(TAG, "subscribeConversationUserStatus userId is null");
-            TUIConversationUtils.callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "userid list is null");
-            return;
-        }
-
-        V2TIMManager.getInstance().subscribeUserStatus(userIdList, new V2TIMCallback() {
-            @Override
-            public void onSuccess() {
-                TUIConversationUtils.callbackOnSuccess(callback, null);
-            }
-
-            @Override
-            public void onError(int code, String desc) {
-                TUIConversationLog.e(TAG, "subscribeConversationUserStatus error code = " + code + ",des = " + desc);
-                TUIConversationUtils.callbackOnError(callback, code, desc);
-            }
-        });
-    }
-
-    @Override
-    public void clearAllUnreadMessage(IUIKitCallback<Void> callback) {
+    public void cleanAllConversationUnreadCount(IUIKitCallback<Void> callback) {
         V2TIMManager.getConversationManager().cleanConversationUnreadMessageCount("", 0, 0, new V2TIMCallback() {
             @Override
             public void onSuccess() {
@@ -515,7 +424,7 @@ public class ConversationProvider implements IConversationProvider {
                                 for (V2TIMConversationOperationResult result : v2TIMConversationOperationResults) {
                                     if (result.getResultCode() == BaseConstants.ERR_SUCC) {
                                         V2TIMConversation v2TIMConversation = markUnreadMap.get(result.getConversationID());
-                                        if (!v2TIMConversation.getMarkList().contains(V2TIMConversation.V2TIM_CONVERSATION_MARK_TYPE_HIDE)) {
+                                        if (!(v2TIMConversation != null && v2TIMConversation.getMarkList().contains(V2TIMConversation.V2TIM_CONVERSATION_MARK_TYPE_HIDE))) {
                                             markUnreadMap.remove(result.getConversationID());
                                         }
                                     }
@@ -568,5 +477,95 @@ public class ConversationProvider implements IConversationProvider {
                 TUIConversationLog.e(TAG, "getMarkUnreadConversationList error:" + code + ", desc:" + ErrorMessageConverter.convertIMError(code, desc));
             }
         });
+    }
+
+    @Override
+    public void loadConversationUserStatus(List<ConversationInfo> dataSource, IUIKitCallback<Map<String, ConversationUserStatusBean>> callback) {
+        if (dataSource == null || dataSource.isEmpty()) {
+            TUIConversationLog.d(TAG, "loadConversationUserStatus datasource is null");
+            return;
+        }
+
+        List<String> userList = new ArrayList<>();
+        for (ConversationInfo itemBean : dataSource) {
+            if (itemBean.isGroup()) {
+                continue;
+            }
+            userList.add(itemBean.getId());
+        }
+        if (userList.isEmpty()) {
+            TUIConversationLog.d(TAG, "loadConversationUserStatus userList is empty");
+            return;
+        }
+        V2TIMManager.getInstance().getUserStatus(userList, new V2TIMValueCallback<List<V2TIMUserStatus>>() {
+            @Override
+            public void onSuccess(List<V2TIMUserStatus> v2TIMUserStatuses) {
+                TUIConversationLog.i(TAG, "getUserStatus success");
+                Map<String, ConversationUserStatusBean> userStatusBeanMap = new HashMap<>();
+                for (V2TIMUserStatus item : v2TIMUserStatuses) {
+                    ConversationUserStatusBean conversationUserStatusBean = new ConversationUserStatusBean();
+                    conversationUserStatusBean.setV2TIMUserStatus(item);
+                    userStatusBeanMap.put(item.getUserID(), conversationUserStatusBean);
+                }
+                TUIConversationUtils.callbackOnSuccess(callback, userStatusBeanMap);
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                TUIConversationLog.e(TAG, "getUserStatus error code = " + code + ",des = " + desc);
+                TUIConversationUtils.callbackOnError(callback, code, desc);
+                if (code == TUIConstants.BuyingFeature.ERR_SDK_INTERFACE_NOT_SUPPORT
+                        && BuildConfig.DEBUG) {
+                    ToastUtil.toastLongMessage(desc);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void subscribeConversationUserStatus(List<String> userIdList, IUIKitCallback<Void> callback) {
+        if (userIdList == null || userIdList.isEmpty()) {
+            TUIConversationLog.e(TAG, "subscribeConversationUserStatus userId is null");
+            TUIConversationUtils.callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "userid list is null");
+            return;
+        }
+
+        V2TIMManager.getInstance().subscribeUserStatus(userIdList, new V2TIMCallback() {
+            @Override
+            public void onSuccess() {
+                TUIConversationUtils.callbackOnSuccess(callback, null);
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                TUIConversationLog.e(TAG, "subscribeConversationUserStatus error code = " + code + ",des = " + desc);
+                TUIConversationUtils.callbackOnError(callback, code, desc);
+            }
+        });
+    }
+
+    @Override
+    public void getGroupMemberIconList(String groupId, int iconCount, IUIKitCallback<List<Object>> callback) {
+        V2TIMManager.getGroupManager().getGroupMemberList(
+                groupId, V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_FILTER_ALL, 0, new V2TIMValueCallback<V2TIMGroupMemberInfoResult>() {
+                    @Override
+                    public void onError(int code, String desc) {
+                        TUIConversationUtils.callbackOnError(callback, code, desc);
+                        TUIConversationLog.e("ConversationIconView",
+                                "getGroupMemberList failed! groupID:" + groupId + "|code:" + code + "|desc: " + ErrorMessageConverter.convertIMError(code, desc));
+                    }
+
+                    @Override
+                    public void onSuccess(V2TIMGroupMemberInfoResult v2TIMGroupMemberInfoResult) {
+                        List<V2TIMGroupMemberFullInfo> v2TIMGroupMemberFullInfoList = v2TIMGroupMemberInfoResult.getMemberInfoList();
+                        int faceSize = Math.min(v2TIMGroupMemberFullInfoList.size(), iconCount);
+                        final List<Object> urlList = new ArrayList<>();
+                        for (int i = 0; i < faceSize; i++) {
+                            V2TIMGroupMemberFullInfo v2TIMGroupMemberFullInfo = v2TIMGroupMemberFullInfoList.get(i);
+                            urlList.add(v2TIMGroupMemberFullInfo.getFaceUrl());
+                        }
+                        TUIConversationUtils.callbackOnSuccess(callback, urlList);
+                    }
+                });
     }
 }

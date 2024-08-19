@@ -8,10 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tencent.qcloud.tuicore.TUIConstants;
-import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUIThemeManager;
 import com.tencent.qcloud.tuikit.timcommon.bean.TUIMessageBean;
 import com.tencent.qcloud.tuikit.timcommon.component.UnreadCountTextView;
@@ -22,7 +21,6 @@ import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.DraftInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationLog;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationUtils;
-import com.tencent.qcloud.tuikit.tuiconversation.config.TUIConversationConfig;
 import com.tencent.qcloud.tuikit.tuiconversation.presenter.ConversationPresenter;
 
 import java.util.Date;
@@ -147,14 +145,14 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
             riskTv.setVisibility(View.GONE);
         }
 
-        if (!conversation.isGroup() && TUIConversationConfig.getInstance().isShowUserStatus()) {
+        if (!conversation.isGroup()) {
             userStatusView.setVisibility(View.VISIBLE);
             if (conversation.getStatusType() == ConversationInfo.USER_STATUS_ONLINE) {
                 userStatusView.setBackgroundResource(
-                    TUIThemeManager.getAttrResId(rootView.getContext(), com.tencent.qcloud.tuikit.timcommon.R.attr.user_status_online));
+                        TUIThemeManager.getAttrResId(rootView.getContext(), com.tencent.qcloud.tuikit.timcommon.R.attr.user_status_online));
             } else {
                 userStatusView.setBackgroundResource(
-                    TUIThemeManager.getAttrResId(rootView.getContext(), com.tencent.qcloud.tuikit.timcommon.R.attr.user_status_offline));
+                        TUIThemeManager.getAttrResId(rootView.getContext(), com.tencent.qcloud.tuikit.timcommon.R.attr.user_status_offline));
             }
         } else {
             userStatusView.setVisibility(View.GONE);

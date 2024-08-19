@@ -16,12 +16,9 @@ public interface IConversationProvider {
 
     void loadMoreConversation(int loadCount, IUIKitCallback<List<ConversationInfo>> callBack);
 
-    void loadConversation(
-            long startSeq, int loadCount, final IUIKitCallback<List<ConversationInfo>> callBack);
+    void loadConversation(long startSeq, int loadCount, final IUIKitCallback<List<ConversationInfo>> callBack);
 
-    void loadMarkConversation(
-            final V2TIMConversationListFilter filter,
-            long startSeq, int loadCount, boolean fromStart, IUIKitCallback<List<ConversationInfo>> callback);
+    void loadMarkConversation(final V2TIMConversationListFilter filter, long startSeq, int loadCount, boolean fromStart, IUIKitCallback<List<ConversationInfo>> callback);
 
     boolean isLoadFinished();
 
@@ -31,9 +28,9 @@ public interface IConversationProvider {
 
     void setConversationTop(String conversationId, boolean isTop, IUIKitCallback<Void> callBack);
 
-    void markConversationFold(String conversationID, boolean isFold, IUIKitCallback<Void> callback);
+    void deleteConversation(String conversationId, IUIKitCallback<Void> callBack);
 
-    void markConversationHidden(String conversationID, boolean isHidden, IUIKitCallback<Void> callback);
+    void clearHistoryMessage(String userId, boolean isGroup, IUIKitCallback<Void> callBack);
 
     void markConversationRead(String conversationID, TUICallback callback);
 
@@ -41,20 +38,19 @@ public interface IConversationProvider {
 
     void markConversationUnread(ConversationInfo conversationInfo, boolean markUnread, IUIKitCallback<Void> callback);
 
-    void cleanConversationUnreadCount(String conversationID, TUICallback callback);
+    void markConversationHidden(String conversationID, boolean isHidden, IUIKitCallback<Void> callback);
 
-    void deleteConversation(String conversationId, IUIKitCallback<Void> callBack);
+    void markConversationFold(String conversationID, boolean isFold, IUIKitCallback<Void> callback);
 
-    void clearHistoryMessage(String userId, boolean isGroup, IUIKitCallback<Void> callBack);
+    void cleanConversationUnreadMessageCount(String conversationID, TUICallback callback);
 
-    void getGroupMemberIconList(String groupId, int iconCount, IUIKitCallback<List<Object>> callback);
+    void cleanAllConversationUnreadCount(IUIKitCallback<Void> callback);
+
+    void getMarkUnreadConversationList(V2TIMConversationListFilter filter, long nextSeq, int count, boolean fromStart, V2TIMValueCallback<HashMap<String, V2TIMConversation>> callback);
 
     void loadConversationUserStatus(List<ConversationInfo> dataSource, IUIKitCallback<Map<String, ConversationUserStatusBean>> callback);
 
     void subscribeConversationUserStatus(List<String> userIdList, IUIKitCallback<Void> callback);
 
-    void clearAllUnreadMessage(IUIKitCallback<Void> callback);
-
-    void getMarkUnreadConversationList(
-            V2TIMConversationListFilter filter, long nextSeq, int count, boolean fromStart, V2TIMValueCallback<HashMap<String, V2TIMConversation>> callback);
+    void getGroupMemberIconList(String groupId, int iconCount, IUIKitCallback<List<Object>> callback);
 }

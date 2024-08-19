@@ -60,7 +60,8 @@ public class FoldedConversationLayout extends RelativeLayout implements IConvers
     }
 
     @Override
-    public void setConversationTop(ConversationInfo conversation) {}
+    public void setConversationTop(ConversationInfo conversation) {
+    }
 
     @Override
     public void deleteConversation(ConversationInfo conversation) {
@@ -70,7 +71,8 @@ public class FoldedConversationLayout extends RelativeLayout implements IConvers
     }
 
     @Override
-    public void clearConversation(ConversationInfo conversation) {}
+    public void clearConversation(ConversationInfo conversation) {
+    }
 
     @Override
     public void markConversationFold(ConversationInfo conversation) {
@@ -101,10 +103,12 @@ public class FoldedConversationLayout extends RelativeLayout implements IConvers
     }
 
     @Override
-    public void hideFoldedItem(boolean needHide) {}
+    public void setHideStatusOfFoldedItem(boolean needHide) {
+    }
 
     @Override
-    public void clearUnreadStatusOfFoldItem() {}
+    public void clearUnreadStatusOfFoldItem() {
+    }
 
     @Override
     public TitleBarLayout getTitleBar() {
@@ -112,5 +116,6 @@ public class FoldedConversationLayout extends RelativeLayout implements IConvers
     }
 
     @Override
-    public void setParentLayout(Object parent) {}
+    public void setParentLayout(Object parent) {
+    }
 }

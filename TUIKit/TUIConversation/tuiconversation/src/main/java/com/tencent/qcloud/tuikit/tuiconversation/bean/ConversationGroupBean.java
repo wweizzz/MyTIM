@@ -103,7 +103,7 @@ public class ConversationGroupBean {
     @Override
     public String toString() {
         return "ConversationGroupBean{"
-            + "title=" + title + ", unReadCount=" + unReadCount + ", markType='" + markType + '\'' + ", weight='" + weight + '\'' + ", groupType='" + groupType
-            + '\'' + ", isHide='" + isHide + '\'' + '}';
+                + "title=" + title + ", unReadCount=" + unReadCount + ", markType='" + markType + '\'' + ", weight='" + weight + '\'' + ", groupType='" + groupType
+                + '\'' + ", isHide='" + isHide + '\'' + '}';
     }
 }

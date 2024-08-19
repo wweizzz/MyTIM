@@ -44,9 +44,6 @@ import com.tencent.qcloud.tuikit.timcommon.component.activities.SelectionActivit
 import com.tencent.qcloud.tuikit.timcommon.component.gatherimage.ShadeImageView;
 import com.tencent.qcloud.tuikit.timcommon.component.impl.GlideEngine;
 import com.tencent.qcloud.tuikit.tuichat.config.TUIChatConfigs;
-import com.tencent.qcloud.tuikit.tuiconversation.TUIConversationService;
-import com.tencent.qcloud.tuikit.tuiconversation.config.TUIConversationConfig;
-import com.tencent.qcloud.tuikit.tuiconversation.listener.ConversationEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -221,7 +218,6 @@ public class ProfileLayout extends FrameLayout implements View.OnClickListener {
         userStatusSubTitle = statusView.findViewById(R.id.user_status_subtitle);
         boolean userStatus = mSharedPreferences.getBoolean(Constants.DEMO_SP_KEY_USER_STATUS, false);
         userStatusSwitch.setChecked(userStatus);
-        TUIConversationConfig.getInstance().setShowUserStatus(userStatus);
         userStatusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -232,7 +228,6 @@ public class ProfileLayout extends FrameLayout implements View.OnClickListener {
                     userStatusSubTitle.setText(getResources().getString(R.string.demo_user_status_switch_off_text));
                 }
 
-                TUIConversationConfig.getInstance().setShowUserStatus(isChecked);
                 mSharedPreferences.edit().putBoolean(Constants.DEMO_SP_KEY_USER_STATUS, isChecked).commit();
                 refreshFragmentUI();
             }

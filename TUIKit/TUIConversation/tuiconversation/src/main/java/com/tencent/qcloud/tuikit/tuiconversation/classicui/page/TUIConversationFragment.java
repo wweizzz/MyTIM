@@ -64,17 +64,6 @@ public class TUIConversationFragment extends BaseFragment {
         return mBaseView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        TUIConversationLog.d(TAG, "TUIConversationFragment onResume");
-    }
-
-    public static TUIConversationFragment newInstance() {
-        TUIConversationFragment fragment = new TUIConversationFragment();
-        return fragment;
-    }
-
     private void initView() {
 
         mConversationLayout = mBaseView.findViewById(R.id.conversation_layout);
@@ -91,7 +80,7 @@ public class TUIConversationFragment extends BaseFragment {
             public void onItemClick(View view, int viewType, ConversationInfo conversationInfo) {
                 if (conversationInfo.isMarkFold()) {
                     mConversationLayout.clearUnreadStatusOfFoldItem();
-                    startFoldedConversationActivity();
+                    TUIConversationUtils.startFoldedConversationActivity();
                 } else {
                     TUIConversationUtils.startChatActivity(conversationInfo);
                 }
@@ -129,7 +118,6 @@ public class TUIConversationFragment extends BaseFragment {
     }
 
     private void initPopMenuAction() {
-
         PopMenuAction action = new PopMenuAction();
         action.setActionName(getResources().getString(R.string.not_display));
         action.setWeight(800);
@@ -138,7 +126,7 @@ public class TUIConversationFragment extends BaseFragment {
             public void onActionClick(int index, Object data) {
                 ConversationInfo conversationInfo = (ConversationInfo) data;
                 if (conversationInfo.isMarkFold()) {
-                    mConversationLayout.hideFoldedItem(true);
+                    mConversationLayout.setHideStatusOfFoldedItem(true);
                 } else {
                     mConversationLayout.markConversationHidden(conversationInfo);
                 }
@@ -291,11 +279,6 @@ public class TUIConversationFragment extends BaseFragment {
             y = y - popHeight;
         }
         mConversationPopWindow.showAsDropDown(view, x, y, Gravity.TOP | Gravity.START);
-    }
-
-    private void startFoldedConversationActivity() {
-        Intent intent = new Intent(getActivity(), TUIFoldedConversationActivity.class);
-        startActivity(intent);
     }
 
     protected List<PopMenuAction> addMoreConversationAction(ConversationInfo conversationInfo) {

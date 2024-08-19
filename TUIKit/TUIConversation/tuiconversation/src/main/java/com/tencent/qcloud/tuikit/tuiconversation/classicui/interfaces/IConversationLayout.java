@@ -38,7 +38,7 @@ public interface IConversationLayout extends ILayout {
     /**
      * Hide folded conversation item
      */
-    void hideFoldedItem(boolean needHide);
+    void setHideStatusOfFoldedItem(boolean needHide);
 
     /**
      * Clear unread status of fold item

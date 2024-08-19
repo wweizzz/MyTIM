@@ -24,7 +24,7 @@ public interface ConversationEventListener {
     void onConversationDeleted(List<String> conversationIDList);
 
     //会话未读总数变更通知
-    void updateTotalUnreadMessageCount(long count);
+    void onUpdateTotalUnreadMessageCount(long count);
 
     /**
      * V2TIMSDKListener
@@ -38,7 +38,7 @@ public interface ConversationEventListener {
     long getUnreadTotal();
 
     // 清除折叠并且删除删除会话
-    void clearFoldMarkAndDeleteConversation(String conversationId);
+    void onClearFoldMarkAndDeleteConversation(String conversationId);
 
     /**
      * ITUINotification

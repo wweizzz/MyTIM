@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuikit.timcommon.component.CustomLinearLayoutManager;
 import com.tencent.qcloud.tuikit.timcommon.component.TitleBarLayout;
@@ -27,6 +29,7 @@ import com.tencent.qcloud.tuikit.tuiconversation.classicui.widget.ForwardConvers
 import com.tencent.qcloud.tuikit.tuiconversation.classicui.widget.ForwardSelectLayout;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationLog;
 import com.tencent.qcloud.tuikit.tuiconversation.presenter.ConversationPresenter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -109,7 +112,8 @@ public class TUIForwardSelectFragment extends BaseFragment {
             }
 
             @Override
-            public void onConversationChanged(List<ConversationInfo> dataSource) {}
+            public void onConversationChanged(List<ConversationInfo> dataSource) {
+            }
         });
 
         mForwardSelectlistViewLayout = view.findViewById(R.id.forward_select_list_layout);
@@ -203,7 +207,7 @@ public class TUIForwardSelectFragment extends BaseFragment {
                     return;
                 }
                 HashMap<String, String> conversationMap =
-                    (HashMap<String, String>) result.getData().getSerializableExtra(TUIConversationConstants.FORWARD_SELECT_CONVERSATION_KEY);
+                        (HashMap<String, String>) result.getData().getSerializableExtra(TUIConversationConstants.FORWARD_SELECT_CONVERSATION_KEY);
                 if (conversationMap == null || conversationMap.isEmpty()) {
                     mContactDataSource.clear();
                     refreshSelectConversations();

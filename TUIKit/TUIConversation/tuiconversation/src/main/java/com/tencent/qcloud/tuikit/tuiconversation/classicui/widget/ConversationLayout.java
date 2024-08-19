@@ -3,6 +3,7 @@ package com.tencent.qcloud.tuikit.tuiconversation.classicui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
 import com.tencent.qcloud.tuikit.timcommon.component.TitleBarLayout;
 import com.tencent.qcloud.tuikit.tuiconversation.R;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
@@ -108,14 +109,14 @@ public class ConversationLayout extends RelativeLayout implements IConversationL
     @Override
     public void markConversationUnread(ConversationInfo conversationInfo, boolean markUnread) {
         if (presenter != null) {
-            presenter.markConversationUnreadAndCleanUnreadCount(conversationInfo, markUnread);
+            presenter.markConversationUnread(conversationInfo, markUnread);
         }
     }
 
     @Override
-    public void hideFoldedItem(boolean needHide) {
+    public void setHideStatusOfFoldedItem(boolean needHide) {
         if (presenter != null) {
-            presenter.hideFoldItem(needHide);
+            presenter.setHideStatusOfHideFoldItem(needHide);
         }
     }
 

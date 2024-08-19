@@ -22,7 +22,7 @@
     <string name="conversation_risk_message_extra">[违规消息]</string>
     <string name="titlebar_mutiselect">多选</string>
     <string name="message_num">条</string>
-    
+
     <string name="conversation_forward">转发</string>
 
     <string name="folded_group_chat">折叠的群聊</string>

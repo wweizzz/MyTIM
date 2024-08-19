@@ -43,8 +43,7 @@
                 app:tabIndicator="@drawable/shape_full_tab_indicator"
                 app:tabMinWidth="64dp"
                 app:tabIndicatorGravity="center"
-                app:tabRippleColor="@color/conversation_tab_bg_color"
-                />
+                app:tabRippleColor="@color/conversation_tab_bg_color" />
 
             <LinearLayout
                 android:id="@+id/conversation_group_setting"

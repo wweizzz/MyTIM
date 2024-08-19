@@ -13,5 +13,5 @@
         <attr name="synthesized_image_gap" format="dimension" />
     </declare-styleable>
 
-    <attr name="conversation_tab_selected" format="reference|color"/>
+    <attr name="conversation_tab_selected" format="reference|color" />
 </resources>

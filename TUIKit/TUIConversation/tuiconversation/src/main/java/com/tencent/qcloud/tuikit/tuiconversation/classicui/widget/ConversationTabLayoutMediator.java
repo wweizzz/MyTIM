@@ -47,17 +47,23 @@ import java.lang.ref.WeakReference;
  * ConversationTabLayoutMediator.
  */
 public class ConversationTabLayoutMediator {
-    @NonNull private final TabLayout tabLayout;
-    @NonNull private final ViewPager2 viewPager;
+    @NonNull
+    private final TabLayout tabLayout;
+    @NonNull
+    private final ViewPager2 viewPager;
     private final boolean autoRefresh;
     private static boolean smoothScroll;
     private final ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy;
-    @Nullable private RecyclerView.Adapter<?> adapter;
+    @Nullable
+    private RecyclerView.Adapter<?> adapter;
     private boolean attached;
 
-    @Nullable private ConversationTabLayoutMediator.TabLayoutOnPageChangeCallback onPageChangeCallback;
-    @Nullable private TabLayout.OnTabSelectedListener onTabSelectedListener;
-    @Nullable private RecyclerView.AdapterDataObserver pagerAdapterObserver;
+    @Nullable
+    private ConversationTabLayoutMediator.TabLayoutOnPageChangeCallback onPageChangeCallback;
+    @Nullable
+    private TabLayout.OnTabSelectedListener onTabSelectedListener;
+    @Nullable
+    private RecyclerView.AdapterDataObserver pagerAdapterObserver;
 
     /**
      * A callback interface that must be implemented to set the text and styling of newly created
@@ -68,25 +74,25 @@ public class ConversationTabLayoutMediator {
          * Called to configure the tab for the page at the specified position. Typically calls {@link
          * TabLayout.Tab#setText(CharSequence)}, but any form of styling can be applied.
          *
-         * @param tab The Tab which should be configured to represent the title of the item at the given
-         *     position in the data set.
+         * @param tab      The Tab which should be configured to represent the title of the item at the given
+         *                 position in the data set.
          * @param position The position of the item within the adapter's data set.
          */
         void onConfigureTab(@NonNull TabLayout.Tab tab, int position);
     }
 
     public ConversationTabLayoutMediator(
-        @NonNull TabLayout tabLayout, @NonNull ViewPager2 viewPager, @NonNull ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy) {
+            @NonNull TabLayout tabLayout, @NonNull ViewPager2 viewPager, @NonNull ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy) {
         this(tabLayout, viewPager, /* autoRefresh= */ true, tabConfigurationStrategy);
     }
 
     public ConversationTabLayoutMediator(@NonNull TabLayout tabLayout, @NonNull ViewPager2 viewPager, boolean autoRefresh,
-        @NonNull ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy) {
+                                         @NonNull ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy) {
         this(tabLayout, viewPager, autoRefresh, /* smoothScroll= */ true, tabConfigurationStrategy);
     }
 
     public ConversationTabLayoutMediator(@NonNull TabLayout tabLayout, @NonNull ViewPager2 viewPager, boolean autoRefresh, boolean smoothScroll,
-        @NonNull ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy) {
+                                         @NonNull ConversationTabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy) {
         this.tabLayout = tabLayout;
         this.viewPager = viewPager;
         this.autoRefresh = autoRefresh;
@@ -100,7 +106,7 @@ public class ConversationTabLayoutMediator {
      * changes.
      *
      * @throws IllegalStateException If the mediator is already attached, or the ViewPager2 has no
-     *     adapter.
+     *                               adapter.
      */
     public void attach() {
         if (attached) {
@@ -109,7 +115,7 @@ public class ConversationTabLayoutMediator {
         adapter = viewPager.getAdapter();
         if (adapter == null) {
             throw new IllegalStateException("ConversationTabLayoutMediator attached before ViewPager2 has an "
-                + "adapter");
+                    + "adapter");
         }
         attached = true;
 
@@ -191,7 +197,8 @@ public class ConversationTabLayoutMediator {
      * callback and not cause a leak.
      */
     private static class TabLayoutOnPageChangeCallback extends ViewPager2.OnPageChangeCallback {
-        @NonNull private final WeakReference<TabLayout> tabLayoutRef;
+        @NonNull
+        private final WeakReference<TabLayout> tabLayoutRef;
         private int previousScrollState;
         private int scrollState;
 
@@ -203,10 +210,10 @@ public class ConversationTabLayoutMediator {
         @Override
         public void onPageScrollStateChanged(final int state) {
             if (state == SCROLL_STATE_DRAGGING) {
-                
+
                 smoothScroll = true;
             } else if (state == SCROLL_STATE_IDLE) {
-                
+
                 smoothScroll = false;
             }
             previousScrollState = scrollState;
@@ -237,7 +244,7 @@ public class ConversationTabLayoutMediator {
                 // Select the tab, only updating the indicator if we're not being dragged/settled
                 // (since onPageScrolled will handle that).
                 boolean updateIndicator =
-                    scrollState == SCROLL_STATE_IDLE || (scrollState == SCROLL_STATE_SETTLING && previousScrollState == SCROLL_STATE_IDLE);
+                        scrollState == SCROLL_STATE_IDLE || (scrollState == SCROLL_STATE_SETTLING && previousScrollState == SCROLL_STATE_IDLE);
                 tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator);
             }
         }
@@ -277,7 +284,8 @@ public class ConversationTabLayoutMediator {
     }
 
     private class PagerAdapterObserver extends RecyclerView.AdapterDataObserver {
-        PagerAdapterObserver() {}
+        PagerAdapterObserver() {
+        }
 
         @Override
         public void onChanged() {

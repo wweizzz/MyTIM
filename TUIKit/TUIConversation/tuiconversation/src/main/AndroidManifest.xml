@@ -14,18 +14,15 @@
         <!-- **************** Classic UI Activity End **************** -->
 
 
-
-
-
         <!-- **************** Minimalist UI Activity Start **************** -->
-<!--        <activity-->
-<!--            android:name="com.tencent.qcloud.tuikit.tuiconversation.minimalistui.page.TUIForwardSelectMinimalistActivity"-->
-<!--            android:theme="@style/ConversationTransparentPopActivityStyle"-->
-<!--            android:screenOrientation="portrait" />-->
+        <!--        <activity-->
+        <!--            android:name="com.tencent.qcloud.tuikit.tuiconversation.minimalistui.page.TUIForwardSelectMinimalistActivity"-->
+        <!--            android:theme="@style/ConversationTransparentPopActivityStyle"-->
+        <!--            android:screenOrientation="portrait" />-->
 
-<!--        <activity-->
-<!--            android:name="com.tencent.qcloud.tuikit.tuiconversation.minimalistui.page.TUIFoldedConversationMinimalistActivity"-->
-<!--            android:screenOrientation="portrait" />-->
+        <!--        <activity-->
+        <!--            android:name="com.tencent.qcloud.tuikit.tuiconversation.minimalistui.page.TUIFoldedConversationMinimalistActivity"-->
+        <!--            android:screenOrientation="portrait" />-->
         <!-- **************** Minimalist UI Activity End **************** -->
 
     </application>

@@ -1,6 +1,7 @@
 package com.tencent.qcloud.tuikit.tuiconversation.bean;
 
 import androidx.annotation.NonNull;
+
 import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo;
 import com.tencent.imsdk.v2.V2TIMMessage;
@@ -87,19 +88,19 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
     private boolean isGroup;
     private boolean top;
     /**
-     *  Is folded conversation or not
+     * Is folded conversation or not
      */
     private boolean isMarkFold;
     /**
-     *  Is marked conversation unread or not
+     * Is marked conversation unread or not
      */
     private boolean isMarkUnread;
     /**
-     *  Is marked conversation hidden or not
+     * Is marked conversation hidden or not
      */
     private boolean isMarkHidden;
     /**
-     *  Is marked conversation local-unread or not
+     * Is marked conversation local-unread or not
      */
     private boolean isMarkLocalUnread;
 
@@ -128,7 +129,8 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
      */
     private long orderKey;
 
-    public ConversationInfo() {}
+    public ConversationInfo() {
+    }
 
     public String getConversationId() {
         return conversationId;
@@ -234,6 +236,7 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
 
     /**
      * Set the time of the last message, in seconds
+     *
      * @param lastMessageTime
      */
     public void setLastMessageTime(long lastMessageTime) {
@@ -375,8 +378,8 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
     @Override
     public String toString() {
         return "ConversationInfo{"
-            + "type=" + type + ", unRead=" + unRead + ", conversationId='" + conversationId + '\'' + ", id='" + id + '\'' + ", iconUrl='" + iconUrlList.size()
-            + '\'' + ", title='" + title + '\'' + ", iconPath=" + iconPath + ", isGroup=" + isGroup + ", top=" + top + ", lastMessageTime=" + lastMessageTime
-            + ", lastMessage=" + lastMessage + ", draftText=" + draft + ", groupType=" + groupType + ", statusType=" + statusType + '}';
+                + "type=" + type + ", unRead=" + unRead + ", conversationId='" + conversationId + '\'' + ", id='" + id + '\'' + ", iconUrl='" + iconUrlList.size()
+                + '\'' + ", title='" + title + '\'' + ", iconPath=" + iconPath + ", isGroup=" + isGroup + ", top=" + top + ", lastMessageTime=" + lastMessageTime
+                + ", lastMessage=" + lastMessage + ", draftText=" + draft + ", groupType=" + groupType + ", statusType=" + statusType + '}';
     }
 }

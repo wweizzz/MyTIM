@@ -1,6 +1,7 @@
 package com.tencent.qcloud.tuikit.tuiconversation.presenter;
 
 import android.text.TextUtils;
+
 import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.imsdk.v2.V2TIMConversationListFilter;
 import com.tencent.imsdk.v2.V2TIMUserStatus;
@@ -12,9 +13,10 @@ import com.tencent.qcloud.tuikit.tuiconversation.TUIConversationService;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.ConversationUtils;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.TUIConversationLog;
-import com.tencent.qcloud.tuikit.tuiconversation.listener.ConversationEventListener;
 import com.tencent.qcloud.tuikit.tuiconversation.interfaces.IConversationListAdapter;
+import com.tencent.qcloud.tuikit.tuiconversation.listener.ConversationEventListener;
 import com.tencent.qcloud.tuikit.tuiconversation.model.ConversationProvider;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +48,7 @@ public class ConversationFoldPresenter {
     public void setConversationListener() {
         conversationEventForMarkObserver = new ConversationEventListener() {
             @Override
-            public void clearFoldMarkAndDeleteConversation(String conversationId) {
+            public void onClearFoldMarkAndDeleteConversation(String conversationId) {
                 ConversationFoldPresenter.this.deleteConversationFromUI(conversationId);
             }
 
@@ -56,10 +58,12 @@ public class ConversationFoldPresenter {
             }
 
             @Override
-            public void onSyncServerFinish() {}
+            public void onSyncServerFinish() {
+            }
 
             @Override
-            public void updateTotalUnreadMessageCount(long count) {}
+            public void onUpdateTotalUnreadMessageCount(long count) {
+            }
 
             @Override
             public void onNewConversation(List<ConversationInfo> conversationList) {
@@ -72,7 +76,8 @@ public class ConversationFoldPresenter {
             }
 
             @Override
-            public void onUserStatusChanged(List<V2TIMUserStatus> userStatusList) {}
+            public void onUserStatusChanged(List<V2TIMUserStatus> userStatusList) {
+            }
 
             @Override
             public void onReceiveMessage(String conversationID, boolean isTypingMessage) {
@@ -80,7 +85,8 @@ public class ConversationFoldPresenter {
             }
 
             @Override
-            public void onReceiveMessageSendForHideConversation(String conversationID) {}
+            public void onReceiveMessageSendForHideConversation(String conversationID) {
+            }
 
             @Override
             public void onConversationDeleted(List<String> conversationIDList) {
@@ -155,7 +161,7 @@ public class ConversationFoldPresenter {
             ConversationInfo update = iterator.next();
             for (int i = 0; i < loadedConversationInfoList.size(); i++) {
                 ConversationInfo cacheInfo = loadedConversationInfoList.get(i);
-                
+
                 if (cacheInfo.getConversationId().equals(update.getConversationId())) {
                     loadedConversationInfoList.set(i, update);
                     iterator.remove();
@@ -229,7 +235,7 @@ public class ConversationFoldPresenter {
             ConversationInfo update = changedInfoList.get(j);
             for (int i = 0; i < uiSourceInfoList.size(); i++) {
                 ConversationInfo cacheInfo = uiSourceInfoList.get(i);
-                
+
                 if (cacheInfo.getConversationId().equals(update.getConversationId())) {
                     if (update.getStatusType() == V2TIMUserStatus.V2TIM_USER_STATUS_UNKNOWN) {
                         update.setStatusType(cacheInfo.getStatusType());
@@ -332,7 +338,8 @@ public class ConversationFoldPresenter {
                 }
 
                 @Override
-                public void onError(String module, int errCode, String errMsg) {}
+                public void onError(String module, int errCode, String errMsg) {
+                }
             });
         }
     }
@@ -380,7 +387,7 @@ public class ConversationFoldPresenter {
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 TUIConversationLog.e(
-                    TAG, "markConversationHidden error, conversationID:" + conversationInfo.getConversationId() + ", code:" + errCode + "|msg:" + errMsg);
+                        TAG, "markConversationHidden error, conversationID:" + conversationInfo.getConversationId() + ", code:" + errCode + "|msg:" + errMsg);
             }
         });
     }
@@ -401,7 +408,7 @@ public class ConversationFoldPresenter {
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 TUIConversationLog.e(
-                    TAG, "markConversationRead error, conversationID:" + conversationInfo.getConversationId() + ", code:" + errCode + "|msg:" + errMsg);
+                        TAG, "markConversationRead error, conversationID:" + conversationInfo.getConversationId() + ", code:" + errCode + "|msg:" + errMsg);
             }
         });
     }

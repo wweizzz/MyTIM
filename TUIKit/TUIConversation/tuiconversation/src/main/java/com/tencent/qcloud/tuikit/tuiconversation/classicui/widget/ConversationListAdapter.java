@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tencent.qcloud.tuikit.timcommon.util.ScreenUtil;
 import com.tencent.qcloud.tuikit.tuiconversation.R;
 import com.tencent.qcloud.tuikit.tuiconversation.TUIConversationService;
@@ -16,6 +18,7 @@ import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.classicui.interfaces.OnConversationAdapterListener;
 import com.tencent.qcloud.tuikit.tuiconversation.commonutil.ConversationUtils;
 import com.tencent.qcloud.tuikit.tuiconversation.interfaces.IConversationListAdapter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +52,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
     private int currentPosition = -1;
 
     private View searchView;
-    
+
     private boolean showFoldedStyle = true;
 
     private String conversationGroupName = ConversationUtils.getConversationAllGroupName();
@@ -192,11 +195,11 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ConversationBaseHolder holder = null;
-        
+
         View view;
-        
+
         if (viewType == ITEM_TYPE_HEADER_SEARCH) {
-            
+
             if (searchView == null) {
                 searchView = new View(parent.getContext());
             }
@@ -215,7 +218,8 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
             return new ForwardLabelHolder(view);
         } else if (viewType == ITEM_TYPE_NULL_DATA) {
             view = inflater.inflate(R.layout.conversation_null_layout, parent, false);
-            return new RecyclerView.ViewHolder(view) {};
+            return new RecyclerView.ViewHolder(view) {
+            };
         } else {
             view = inflater.inflate(R.layout.conversation_list_item_layout, parent, false);
             holder = new ConversationCommonHolder(view);
@@ -280,7 +284,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
         if (holder instanceof HeaderViewHolder) {
             return;
         }
-        
+
         if (mOnConversationAdapterListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -304,7 +308,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
         }
     }
 
-    
+
     private void setCheckBoxStatus(final ConversationInfo conversationInfo, int position, ConversationBaseHolder baseHolder) {
         if (!(baseHolder instanceof ConversationCommonHolder) || ((ConversationCommonHolder) baseHolder).multiSelectCheckBox == null) {
             return;
@@ -326,10 +330,10 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
                 commonHolder.itemView.setEnabled(true);
                 commonHolder.multiSelectCheckBox.setEnabled(true);
                 commonHolder.itemView.setAlpha(1f);
-                
+
                 commonHolder.multiSelectCheckBox.setChecked(isItemChecked(conversationId));
             }
-            
+
             commonHolder.multiSelectCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -340,7 +344,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
                 }
             });
 
-            
+
             baseHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -370,7 +374,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
 
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-        
+
         if (holder instanceof ConversationCommonHolder) {
             ((ConversationCommonHolder) holder).conversationIconView.clearImage();
         }
@@ -585,7 +589,8 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
         }
 
         @Override
-        public void layoutViews(ConversationInfo conversationInfo, int position) {}
+        public void layoutViews(ConversationInfo conversationInfo, int position) {
+        }
     }
 
     static class ForwardSelectHolder extends ConversationBaseHolder {
@@ -597,7 +602,8 @@ public class ConversationListAdapter extends RecyclerView.Adapter implements ICo
         }
 
         @Override
-        public void layoutViews(ConversationInfo conversationInfo, int position) {}
+        public void layoutViews(ConversationInfo conversationInfo, int position) {
+        }
 
         public void refreshTitle(boolean isCreateGroup) {
             if (titleView == null) {

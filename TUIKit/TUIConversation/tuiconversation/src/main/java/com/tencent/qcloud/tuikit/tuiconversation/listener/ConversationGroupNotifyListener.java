@@ -1,6 +1,7 @@
 package com.tencent.qcloud.tuikit.tuiconversation.listener;
 
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationGroupBean;
+
 import java.util.List;
 
 public interface ConversationGroupNotifyListener {

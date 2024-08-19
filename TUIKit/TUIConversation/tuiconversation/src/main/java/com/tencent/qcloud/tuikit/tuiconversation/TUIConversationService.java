@@ -95,10 +95,10 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
             return conversationEventListener.getUnreadTotal();
         } else if (TextUtils.equals(TUIConstants.TUIConversation.METHOD_DELETE_CONVERSATION, method)) {
             String conversationId = (String) param.get(TUIConstants.TUIConversation.CONVERSATION_ID);
-            conversationEventListener.clearFoldMarkAndDeleteConversation(conversationId);
+            conversationEventListener.onClearFoldMarkAndDeleteConversation(conversationId);
             List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
             for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                conversationEventObserver.clearFoldMarkAndDeleteConversation(conversationId);
+                conversationEventObserver.onClearFoldMarkAndDeleteConversation(conversationId);
             }
         }
         return result;
@@ -266,11 +266,11 @@ public class TUIConversationService implements TUIInitializer, ITUIService, ITUI
             public void onTotalUnreadMessageCountChanged(long totalUnreadCount) {
                 ConversationEventListener conversationEventListener = getInstance().getConversationEventListener();
                 if (conversationEventListener != null) {
-                    conversationEventListener.updateTotalUnreadMessageCount(totalUnreadCount);
+                    conversationEventListener.onUpdateTotalUnreadMessageCount(totalUnreadCount);
                 }
                 List<ConversationEventListener> conversationEventObserverList = getConversationEventListenerList();
                 for (ConversationEventListener conversationEventObserver : conversationEventObserverList) {
-                    conversationEventObserver.updateTotalUnreadMessageCount(totalUnreadCount);
+                    conversationEventObserver.onUpdateTotalUnreadMessageCount(totalUnreadCount);
                 }
             }
 

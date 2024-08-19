@@ -3,6 +3,7 @@ package com.tencent.qcloud.tuikit.tuiconversation.commonutil;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ListView;
+
 import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo;
 import com.tencent.imsdk.v2.V2TIMManager;
@@ -14,8 +15,8 @@ import com.tencent.qcloud.tuikit.tuiconversation.R;
 import com.tencent.qcloud.tuikit.tuiconversation.TUIConversationService;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.DraftInfo;
+
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 public class ConversationUtils {
@@ -36,8 +37,8 @@ public class ConversationUtils {
             return null;
         }
         TUIConversationLog.i(TAG,
-            "TIMConversation2ConversationInfo id:" + conversation.getConversationID() + "|name:" + conversation.getShowName()
-                + "|unreadNum:" + conversation.getUnreadCount());
+                "TIMConversation2ConversationInfo id:" + conversation.getConversationID() + "|name:" + conversation.getShowName()
+                        + "|unreadNum:" + conversation.getUnreadCount());
         final ConversationInfo info = new ConversationInfo();
         info.setConversation(conversation);
         int type = conversation.getType();

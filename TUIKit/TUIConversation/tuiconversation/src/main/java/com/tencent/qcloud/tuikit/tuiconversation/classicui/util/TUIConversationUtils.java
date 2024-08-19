@@ -1,11 +1,13 @@
 package com.tencent.qcloud.tuikit.tuiconversation.classicui.util;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuikit.tuiconversation.bean.ConversationInfo;
+import com.tencent.qcloud.tuikit.tuiconversation.classicui.page.TUIFoldedConversationActivity;
 
 import java.io.Serializable;
 
@@ -30,5 +32,9 @@ public class TUIConversationUtils {
         } else {
             TUICore.startActivity(TUIConstants.TUIChat.C2C_CHAT_ACTIVITY_NAME, param);
         }
+    }
+
+    public static void startFoldedConversationActivity() {
+        TUICore.startActivity("TUIFoldedConversationActivity", new Bundle());
     }
 }

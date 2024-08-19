@@ -2,7 +2,6 @@ package com.tencent.qcloud.tuikit.tuiconversation.commonutil;
 
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.qcloud.tuicore.util.ErrorMessageConverter;
-import com.tencent.qcloud.tuikit.timcommon.bean.TUIMessageBean;
 import com.tencent.qcloud.tuikit.timcommon.component.interfaces.IUIKitCallback;
 
 public class TUIConversationUtils {

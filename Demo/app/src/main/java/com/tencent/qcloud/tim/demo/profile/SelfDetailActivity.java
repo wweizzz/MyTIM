@@ -26,7 +26,6 @@ import com.tencent.qcloud.tuikit.timcommon.component.PopupInputCard;
 import com.tencent.qcloud.tuikit.timcommon.component.TitleBarLayout;
 import com.tencent.qcloud.tuikit.timcommon.component.activities.BaseLightActivity;
 import com.tencent.qcloud.tuikit.timcommon.component.activities.ImageSelectActivity;
-import com.tencent.qcloud.tuikit.timcommon.component.activities.ImageSelectMinimalistActivity;
 import com.tencent.qcloud.tuikit.timcommon.component.activities.SelectionActivity;
 import com.tencent.qcloud.tuikit.timcommon.component.gatherimage.ShadeImageView;
 import com.tencent.qcloud.tuikit.timcommon.component.impl.GlideEngine;
@@ -166,8 +165,8 @@ public class SelfDetailActivity extends BaseLightActivity implements View.OnClic
             intent.putExtra(ImageSelectActivity.TITLE, getString(R.string.demo_choose_avatar));
             intent.putExtra(ImageSelectActivity.SPAN_COUNT, 4);
             int itemWidth = (int) (ScreenUtil.getScreenWidth(this) * 0.2f);
-            intent.putExtra(ImageSelectMinimalistActivity.ITEM_WIDTH, itemWidth);
-            intent.putExtra(ImageSelectMinimalistActivity.ITEM_HEIGHT, itemWidth);
+            intent.putExtra(ImageSelectActivity.ITEM_WIDTH, itemWidth);
+            intent.putExtra(ImageSelectActivity.ITEM_HEIGHT, itemWidth);
             intent.putExtra(ImageSelectActivity.DATA, faceList);
             intent.putExtra(ImageSelectActivity.SELECTED, new ImageSelectActivity.ImageBean(faceUrl, faceUrl, false));
             startActivityForResult(intent, CHOOSE_AVATAR_REQUEST_CODE);

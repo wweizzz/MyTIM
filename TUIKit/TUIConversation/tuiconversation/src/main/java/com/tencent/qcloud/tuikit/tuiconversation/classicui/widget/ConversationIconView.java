@@ -56,7 +56,7 @@ public class ConversationIconView extends RelativeLayout {
     }
 
     public void setIconUrls(final List<Object> iconUrls, final String conversationId) {
-        
+
         ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
