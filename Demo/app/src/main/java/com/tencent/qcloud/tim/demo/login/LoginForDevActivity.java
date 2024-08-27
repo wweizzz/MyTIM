@@ -160,7 +160,7 @@ public class LoginForDevActivity extends BaseLightActivity {
                 }
             }
         });
-        mUserAccount.setText(UserInfo.getInstance().getUserId());
+        mUserAccount.setText(GenerateTestUserSig.genTestUserId());
 
         languageArea.setOnClickListener(new View.OnClickListener() {
             @Override
